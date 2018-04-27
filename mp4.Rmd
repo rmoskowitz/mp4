@@ -1,0 +1,24 @@
+---
+title: "Mp4"
+output: html_document
+---
+
+```{r}
+library(mdsr)
+library(RMySQL)
+db <- dbConnect_scidb(dbname = "imdb")
+```
+
+```{r}
+db %>%
+  dbGetQuery("SELECT DISTINCT(title), production_year, mi1.info 
+  FROM movie_info AS mi1
+    JOIN movie_info AS mi2 ON mi2.movie_id = mi1.movie_id
+    JOIN title AS t ON mi1.movie_id = t.id
+    WHERE mi1.info_type_id = 107 
+    AND  production_year BETWEEN 1960 and 1969
+    AND mi2.info_type_id = 8
+    AND mi2.info = 'USA'
+    HAVING mi1.info LIKE '$%'
+    ORDER BY mi1.info desc;")
+```
