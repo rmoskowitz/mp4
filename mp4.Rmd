@@ -19,6 +19,9 @@ db %>%
     AND  production_year BETWEEN 1960 and 1969
     AND mi2.info_type_id = 8
     AND mi2.info = 'USA'
+    GROUP BY t.id
     HAVING mi1.info LIKE '$%'
     ORDER BY mi1.info desc;")
+
+
 ```
