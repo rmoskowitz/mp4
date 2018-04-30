@@ -10,18 +10,26 @@ db <- dbConnect_scidb(dbname = "imdb")
 ```
 
 ```{r}
-db %>%
-  dbGetQuery("SELECT DISTINCT(title), production_year, mi1.info 
-  FROM movie_info AS mi1
-    JOIN movie_info AS mi2 ON mi2.movie_id = mi1.movie_id
-    JOIN title AS t ON mi1.movie_id = t.id
-    WHERE mi1.info_type_id = 107 
-    AND  production_year BETWEEN 1960 and 1969
-    AND mi2.info_type_id = 8
-    AND mi2.info = 'USA'
-    GROUP BY t.id
-    HAVING mi1.info LIKE '$%'
-    ORDER BY mi1.info desc;")
+q <- "SELECT mi1.movie_id, 
+			      mi1.info AS gross, 
+            mi2.info, 
+            t.title
+      FROM title AS t
+      JOIN movie_info AS mi1 ON
+      	mi1.movie_id = t.id
+      JOIN movie_info AS mi2 ON 
+      	mi2.movie_id = mi1.movie_id
+      WHERE mi1.info_type_id = 107
+      		AND mi2.info_type_id = 8
+      		AND mi2.info = 'USA'
+          AND t.production_year BETWEEN 1960 AND 1969
+      LIMIT 0, 100";
+dbq <- dbGetQuery(db, q)
 
+dbq %>%
+  filter(grepl("USA|worldwide|Worldwide", gross)) %>%
+  mutate(gross_string = str_extract(gross, "^\\$[0-9]+,[0-9]{3},[0-9]{3}"),
+         gross = parse_number(gross_string)) %>%
+  arrange(desc(gross))
 
 ```
