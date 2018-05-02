@@ -39,9 +39,4 @@ totalgross <- dbq %>%
 #summarize to get gross income 
 #work on another decade
 #proportion of female characters 
-
-```{r}
-db <- dbConnect_scidb(dbname = "imdb")
-db <- "SELECT ";
-```
-
+ 
