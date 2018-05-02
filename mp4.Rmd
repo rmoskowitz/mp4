@@ -9,7 +9,7 @@ db <- dbConnect_scidb(dbname = "imdb")
 q <- "SELECT mi1.movie_id, 
 			      mi1.info AS gross, 
             mi2.info, 
-            t.title,
+            t.title
       FROM title AS t
       JOIN movie_info AS mi1 ON
       	mi1.movie_id = t.id
@@ -17,7 +17,7 @@ q <- "SELECT mi1.movie_id,
       	mi2.movie_id = mi1.movie_id
       JOIN cast_info AS ci ON
         ci.movie_id = mi1.movie_id
-      JOIN name = AS n ON
+      JOIN name AS n ON
         n.id = ci.id
       WHERE mi1.info_type_id = 107
       		AND mi2.info_type_id = 8
@@ -41,9 +41,4 @@ totalgross <- dbq %>%
 #summarize to get gross income 
 #work on another decade
 #proportion of female characters 
-
-```{r}
-db <- dbConnect_scidb(dbname = "imdb")
-db <- "SELECT ";
-```
-
+ 
