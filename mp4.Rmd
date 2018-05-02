@@ -1,35 +1,49 @@
 ---
-title: "Mp4"
+title: "mp4"
 output: html_document
 ---
-
 ```{r}
 library(mdsr)
 library(RMySQL)
 db <- dbConnect_scidb(dbname = "imdb")
-```
-
-```{r}
 q <- "SELECT mi1.movie_id, 
 			      mi1.info AS gross, 
             mi2.info, 
-            t.title
+            t.title,
       FROM title AS t
       JOIN movie_info AS mi1 ON
       	mi1.movie_id = t.id
       JOIN movie_info AS mi2 ON 
       	mi2.movie_id = mi1.movie_id
+      JOIN cast_info AS ci ON
+        ci.movie_id = mi1.movie_id
+      JOIN name = AS n ON
+        n.id = ci.id
       WHERE mi1.info_type_id = 107
       		AND mi2.info_type_id = 8
       		AND mi2.info = 'USA'
-          AND t.production_year BETWEEN 1960 AND 1969
-      LIMIT 0, 100";
+          AND t.production_year BETWEEN 1960 AND 1969";
 dbq <- dbGetQuery(db, q)
 
-dbq %>%
+totalgross <- dbq %>%
   filter(grepl("USA|worldwide|Worldwide", gross)) %>%
   mutate(gross_string = str_extract(gross, "^\\$[0-9]+,[0-9]{3},[0-9]{3}"),
          gross = parse_number(gross_string)) %>%
-  arrange(desc(gross))
+  arrange(desc(gross)) 
+
+#shows that there's no repeating films
+#no need to group by and summarize
+#what to do next: join with a table that shows the list of leading female characters
+#ideas: use proportion of female character than finding leading female 
 
 ```
+#group by ID
+#summarize to get gross income 
+#work on another decade
+#proportion of female characters 
+
+```{r}
+db <- dbConnect_scidb(dbname = "imdb")
+db <- "SELECT ";
+```
+
