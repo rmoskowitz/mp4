@@ -9,16 +9,12 @@ db <- dbConnect_scidb(dbname = "imdb")
 q <- "SELECT mi1.movie_id, 
 			      mi1.info AS gross, 
             mi2.info, 
-            t.title,
+            t.title
       FROM title AS t
       JOIN movie_info AS mi1 ON
       	mi1.movie_id = t.id
       JOIN movie_info AS mi2 ON 
       	mi2.movie_id = mi1.movie_id
-      JOIN cast_info AS ci ON
-        ci.movie_id = mi1.movie_id
-      JOIN name = AS n ON
-        n.id = ci.id
       WHERE mi1.info_type_id = 107
       		AND mi2.info_type_id = 8
       		AND mi2.info = 'USA'
@@ -26,10 +22,12 @@ q <- "SELECT mi1.movie_id,
 dbq <- dbGetQuery(db, q)
 
 totalgross <- dbq %>%
-  filter(grepl("USA|worldwide|Worldwide", gross)) %>%
+  filter(grepl("\\(USA\\)|worldwide|Worldwide", gross)) %>%
   mutate(gross_string = str_extract(gross, "^\\$[0-9]+,[0-9]{3},[0-9]{3}"),
          gross = parse_number(gross_string)) %>%
-  arrange(desc(gross)) 
+  group_by(movie_id) %>%
+  summarise(sum_gross = sum(gross)) %>%
+  arrange(desc(sum_gross)) 
 
 #shows that there's no repeating films
 #no need to group by and summarize
