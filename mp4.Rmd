@@ -18,25 +18,142 @@ q <- "SELECT mi1.movie_id,
       WHERE mi1.info_type_id = 107
       		AND mi2.info_type_id = 8
       		AND mi2.info = 'USA'
-          AND t.production_year BETWEEN 1960 AND 1969";
+          AND t.production_year BETWEEN 1960 AND 1969"; 
 dbq <- dbGetQuery(db, q)
 
 totalgross <- dbq %>%
   filter(grepl("\\(USA\\)|worldwide|Worldwide", gross)) %>%
   mutate(gross_string = str_extract(gross, "^\\$[0-9]+,[0-9]{3},[0-9]{3}"),
          gross = parse_number(gross_string)) %>%
-  group_by(movie_id) %>%
+  group_by(movie_id, title) %>%
   summarise(sum_gross = sum(gross)) %>%
-  arrange(desc(sum_gross)) 
+  arrange(desc(sum_gross))%>%
+  head(1000)
 
-#shows that there's no repeating films
-#no need to group by and summarize
-#what to do next: join with a table that shows the list of leading female characters
-#ideas: use proportion of female character than finding leading female 
+#join with other tables to get directors 
+j <- "SELECT movie_id, person_id,  gender, production_year,
+COUNT(DISTINCT(person_id))
+FROM imdb.cast_info AS ci 
+JOIN name AS n ON n.id = ci.person_id
+JOIN title AS t ON t.id = ci.movie_id
+WHERE role_id = 8
+AND production_year BETWEEN 1960 AND 1969;"
+dbj <- dbGetQuery(db, j)
+#got the total number of directors 
+#16121
 
+#find ratio of female directors
+femaledirectors <- "SELECT movie_id, person_id,  gender, production_year
+FROM imdb.cast_info AS ci 
+JOIN name AS n ON n.id = ci.person_id
+JOIN title AS t ON t.id = ci.movie_id
+WHERE role_id = 8
+AND production_year BETWEEN 1960 AND 1969
+AND gender = 'f';"
+dbfemaledirectors <- dbGetQuery(db, femaledirectors)
+#use proportion of female character than finding leading female 
+#388
+
+dbft60 <- inner_join(dbfemaledirectors, totalgross)
+#no results is shown, meaning there are no female directors 
 ```
-#group by ID
-#summarize to get gross income 
+ 
 #work on another decade
 #proportion of female characters 
+```{r}
+db <- dbConnect_scidb(dbname = "imdb")
+eighty <- "SELECT mi1.movie_id, 
+			      mi1.info AS gross, 
+            mi2.info, 
+            t.title
+      FROM title AS t
+      JOIN movie_info AS mi1 ON
+      	mi1.movie_id = t.id
+      JOIN movie_info AS mi2 ON 
+      	mi2.movie_id = mi1.movie_id
+      WHERE mi1.info_type_id = 107
+      		AND mi2.info_type_id = 8
+      		AND mi2.info = 'USA'
+          AND t.production_year BETWEEN 1980 AND 1989"; 
+dbeighty <- dbGetQuery(db, eighty)
+
+totalgross80 <- dbeighty %>%
+  filter(grepl("\\(USA\\)|worldwide|Worldwide", gross)) %>%
+  mutate(gross_string = str_extract(gross, "^\\$[0-9]+,[0-9]{3},[0-9]{3}"),
+         gross = parse_number(gross_string)) %>%
+  group_by(movie_id, title) %>%
+  summarise(sum_gross = sum(gross)) %>%
+  arrange(desc(sum_gross))%>%
+  head(1000)
+
+#join with other tables to get directors 
+j <- "SELECT movie_id, person_id,  gender, production_year,
+COUNT(DISTINCT(person_id))
+FROM imdb.cast_info AS ci 
+JOIN name AS n ON n.id = ci.person_id
+JOIN title AS t ON t.id = ci.movie_id
+WHERE role_id = 8
+AND production_year BETWEEN 1980 AND 1989;"
+dbj <- dbGetQuery(db, j)
+#got the total number of directors 
+#16121
+
+#find ratio of female directors
+femaledirectors80 <- "SELECT movie_id, person_id,  gender, production_year
+FROM imdb.cast_info AS ci 
+JOIN name AS n ON n.id = ci.person_id
+JOIN title AS t ON t.id = ci.movie_id
+WHERE role_id = 8
+AND production_year BETWEEN 1980 AND 1989
+AND gender = 'f';"
+dbfemaledirectors80 <- dbGetQuery(db, femaledirectors80)
+#use proportion of female character than finding leading female 
+#388
+
+dbft80 <- inner_join(dbfemaledirectors80, totalgross80)
+#no results is shown, meaning there are no female directors 
+```
+```{r}
+db <- dbConnect_scidb(dbname = "imdb")
+twentyseventeen <- "SELECT mi1.movie_id, 
+			      mi1.info AS gross, 
+            mi2.info, 
+            t.title
+      FROM title AS t
+      JOIN movie_info AS mi1 ON
+      	mi1.movie_id = t.id
+      JOIN movie_info AS mi2 ON 
+      	mi2.movie_id = mi1.movie_id
+      WHERE mi1.info_type_id = 107
+      		AND mi2.info_type_id = 8
+      		AND mi2.info = 'USA'
+          AND t.production_year BETWEEN 2010 AND 2018"; 
+dbtwentyseventeen <- dbGetQuery(db, twentyseventeen)
+
+totalgross2017 <- dbtwentyseventeen %>%
+  filter(grepl("\\(USA\\)|worldwide|Worldwide", gross)) %>%
+  mutate(gross_string = str_extract(gross, "^\\$[0-9]+,[0-9]{3},[0-9]{3}"),
+         gross = parse_number(gross_string)) %>%
+  group_by(movie_id, title) %>%
+  summarise(sum_gross = sum(gross)) %>%
+  arrange(desc(sum_gross))%>%
+  head(1000)
+
+
+#find ratio of female directors
+femaledirectors2017 <- "SELECT movie_id, person_id,  gender, production_year
+FROM imdb.cast_info AS ci 
+JOIN name AS n ON n.id = ci.person_id
+JOIN title AS t ON t.id = ci.movie_id
+WHERE role_id = 8
+AND t.production_year BETWEEN 2010 AND 2018
+AND gender = 'f';"
+dbfemaledirectors2017 <- dbGetQuery(db, femaledirectors2017)
  
+
+dbft2017 <- inner_join(dbfemaledirectors2017, totalgross2017)
+```
+ #2 graphs
+ 1. a line graph (0-1000), male and female directors over time
+ 2. line graph trend: increase of only female directors over time 
+ 3. bechdel test (webscraping) 
