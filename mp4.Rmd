@@ -48,6 +48,7 @@ alldirdb <- function(s){
                           person_id,
                           gender,
                           production_year,
+                          t.title,
                           COUNT(DISTINCT(person_id)) AS totaldirectors
                     FROM imdb.cast_info AS ci 
                     JOIN name AS n ON n.id = ci.person_id
@@ -62,7 +63,8 @@ alldirdb <- function(s){
 femdirdb <- function(s){
         st <- "SELECT movie_id,
                       person_id,
-                      gender,
+                      gender, 
+                      t.title,
                       production_year,
                       COUNT(Distinct person_id) AS femaledirectors 
                FROM imdb.cast_info AS ci 
@@ -142,6 +144,82 @@ allyearsfinal <- allyearstotal %>%
   mutate(prop_male = 1)
 ```
 
+
+```{r}
+#find top movie directed by women for each of our selected years for annotations
+# Get movies for specified year
+movie <- function(s) {
+            st <- "SELECT mi1.movie_id, 
+                  mi1.info AS gross, 
+                  mi2.info, 
+                  t.title,
+                  t.production_year
+            FROM title AS t
+            JOIN movie_info AS mi1 ON
+                mi1.movie_id = t.id
+            JOIN movie_info AS mi2 ON 
+                mi2.movie_id = mi1.movie_id
+            JOIN name AS n ON n.id = t.id
+            WHERE mi1.info_type_id = 107
+                    AND mi2.info_type_id = 8
+                    AND mi2.info = 'USA'
+                AND t.production_year = years
+                  AND gender = 'f'"; 
+            q <- sub("years", s, st)
+            return(dbGetQuery(db, q))
+}
+
+# Extract gross from specified database
+gross <- function(dbs) {
+  dbs %>%
+  filter(grepl("\\(USA\\)|worldwide|Worldwide", gross)) %>%
+  mutate(gross_string = str_extract(gross, "^\\$[0-9]+,[0-9]{3},[0-9]{3}"),
+         gross = parse_number(gross_string)) %>%
+  group_by(movie_id, title, production_year) %>%
+  summarise(sum_gross = sum(gross)) %>%
+  arrange(desc(sum_gross))
+}
+
+movie67 <- movie(1967)
+gross67 <- gross(movie67)
+
+#top movie directed by women in 1967 = Guess Who's Coming to Dinner, Bonnie and Clyde, Casino Royale
+gross67 
+
+movie77 <- 
+
+
+
+```
+
+# Get total female director of specified year
+fem <- function(s){
+        st <- "SELECT movie_id,
+                      person_id,
+                      gender, 
+                      t.title,
+                      production_year
+               FROM imdb.cast_info AS ci 
+               JOIN name AS n ON n.id = ci.person_id
+               JOIN title AS t ON t.id = ci.movie_id
+               WHERE role_id = 8
+                  AND production_year = years
+                  AND gender = 'f';"
+        q <- sub("years", s, st)
+        return(dbGetQuery(db, q))
+        
+}
+
+
+movie67 <- movie(1967)
+gross67 <- gross(movie67)
+alldir67 <- alldir(1967)
+fem67 <- fem(1967)
+prop67 <- fem67
+
+prop67
+```
+
 ```{r}
 ggplot(allyearsfinal, aes(x = production_year, y = prop, fill = gender)) + 
 
@@ -157,6 +235,6 @@ scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1), labels = c("0", "0.5
   
 labs (title = "Gender of Movie Directors & Events in Feminism Over the Past 50 Years", x = "Production Year", y = "Proportion of Directors", fill = "Gender") +
   
-annotate("text", x = 1973, y = 0.2, label = "Roe v. Wade", size = 3, family = "sans", color = "black") +  annotate("text", x = 1975, y = 0.6, label = "Take Back the Night", size = 3, family = "sans", color = "black") +  annotate("text", x = 1977, y = 0.4, label = "National Women's Conference", size = 3, family = "sans", color = "black") +  annotate("text", x = 1984, y = 0.27, label = "Sister Outsider", size = 3, family = "sans", color = "black") +  annotate("text", x = 1990, y = 0.37, label = "Riot Grrrl", size = 3, family = "sans", color = "black") +  annotate("text", x = 1994, y = 0.15, label = "Gender Equity in Education", size = 3, family = "sans", color = "black") +  annotate("text", x = 2011, y = 0.3, label = "SlutWalk", size = 3, family = "sans", color = "black") + annotate("text", x = 2013.4, y = 0.7, label = "Women's March", size = 3, family = "sans", color = "black") + annotate("text", x = 2015, y = 0.6, label = "#MeToo", size = 3, family = "sans", color = "black") + annotate("text", x = 2014.5, y = 0.5, label = "Time's Up", size = 3, family = "sans", color = "black")
+annotate("text", x = 1973, y = 0.2, label = "Roe v. Wade", size = 3, family = "sans", color = "black") 
 ```
 
