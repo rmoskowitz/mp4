@@ -180,13 +180,25 @@ gross <- function(dbs) {
   arrange(desc(sum_gross))
 }
 
-movie67 <- movie(1967)
-gross67 <- gross(movie67)
-
-#top movie directed by women in 1967 = Guess Who's Coming to Dinner, Bonnie and Clyde, Casino Royale
+```{r}
+movie <- movie(1967)
+gross <- gross(movie67)
 gross67 
+#top movie directed by women in 1967 = Guess Who's Coming to Dinner, Bonnie and Clyde, Casino Royale
 
-movie77 <- 
+#top movie directed by women in 1977 = 
+
+#top movie directed by women in 1987 = 
+
+#top movie directed by women in 1997 =
+
+#top movie directed by women in 20007
+
+
+
+```
+
+
 
 
 
