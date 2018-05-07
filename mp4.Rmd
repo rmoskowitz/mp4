@@ -148,7 +148,7 @@ allyearsfinal <- allyearstotal %>%
 ```{r}
 #find top movie directed by women for each of our selected years for annotations
 # Get movies for specified year
-movie <- function(s) {
+female_movies <- function(s) {
             st <- "SELECT mi1.movie_id, 
                   mi1.info AS gross, 
                   mi2.info, 
@@ -160,17 +160,19 @@ movie <- function(s) {
             JOIN movie_info AS mi2 ON 
                 mi2.movie_id = mi1.movie_id
             JOIN name AS n ON n.id = t.id
+            JOIN imdb.cast_info AS ci ON n.id = ci.person_id
             WHERE mi1.info_type_id = 107
+                    AND role_id = 8
+                    AND gender = 'f'
                     AND mi2.info_type_id = 8
                     AND mi2.info = 'USA'
-                AND t.production_year = years
-                  AND gender = 'f'"; 
+                AND t.production_year = years"; 
             q <- sub("years", s, st)
             return(dbGetQuery(db, q))
 }
 
 # Extract gross from specified database
-gross <- function(dbs) {
+gross_female <- function(dbs) {
   dbs %>%
   filter(grepl("\\(USA\\)|worldwide|Worldwide", gross)) %>%
   mutate(gross_string = str_extract(gross, "^\\$[0-9]+,[0-9]{3},[0-9]{3}"),
@@ -180,57 +182,29 @@ gross <- function(dbs) {
   arrange(desc(sum_gross))
 }
 
-```{r}
-movie <- movie(1967)
-gross <- gross(movie67)
-gross67 
+
+female_mov <- female_movies(1977)
+gross_new <- gross_female(female_mov)
+gross_new
+
 #top movie directed by women in 1967 = Guess Who's Coming to Dinner, Bonnie and Clyde, Casino Royale
 
-#top movie directed by women in 1977 = 
+#top movie directed by women in 1977 = Close Encounters of the Third Kind, Pete's Dragon, Annie Hall
 
 #top movie directed by women in 1987 = 
 
 #top movie directed by women in 1997 =
 
-#top movie directed by women in 20007
+#top movie directed by women in 2007 =
 
-
-
-```
-
-
-
-
+#top movie directed by women in 2017 = 
 
 ```
 
-# Get total female director of specified year
-fem <- function(s){
-        st <- "SELECT movie_id,
-                      person_id,
-                      gender, 
-                      t.title,
-                      production_year
-               FROM imdb.cast_info AS ci 
-               JOIN name AS n ON n.id = ci.person_id
-               JOIN title AS t ON t.id = ci.movie_id
-               WHERE role_id = 8
-                  AND production_year = years
-                  AND gender = 'f';"
-        q <- sub("years", s, st)
-        return(dbGetQuery(db, q))
-        
-}
-
-
-movie67 <- movie(1967)
-gross67 <- gross(movie67)
-alldir67 <- alldir(1967)
-fem67 <- fem(1967)
-prop67 <- fem67
-
-prop67
-```
+FROM imdb.cast_info AS ci 
+                    JOIN name AS n ON n.id = ci.person_id
+                    JOIN title AS t ON t.id = ci.movie_id
+                    WHERE role_id = 8
 
 ```{r}
 ggplot(allyearsfinal, aes(x = production_year, y = prop, fill = gender)) + 
