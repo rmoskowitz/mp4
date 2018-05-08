@@ -191,39 +191,42 @@ gross67 <- grossdb(mov67)
 gross67
 #top movie directed by women in 1967: NONE
 ```
+
 ```{r}
 mov77 <- moviesdb(1977)
 gross77 <- grossdb(mov77)
 gross77
-#top movie directed by women in 1977: 
+#top movie directed by women in 1977: NONE
+#1978 = Moment by Moment
+#1980 = It's My Turn
 ```
 
 ```{r}
 mov87 <- moviesdb(1987)
 gross87 <- grossdb(mov87)
 gross87
-#top movie directed by women in 1987
+#top movie directed by women in 1987: Ishtar, Back to the Beach, Maid to Order
 ```
 
 ```{r}
 mov97 <- moviesdb(1997)
 gross97 <- grossdb(mov97)
 gross97
-#top movie directed by women in 1997
+#top movie directed by women in 1997: The Peacemaker, Private Pars, Out to Sea
 ```
 
 ```{r}
 mov07 <- moviesdb(2007)
 gross07 <- grossdb(mov07)
 gross07
-#top movie directed by women in 2007
+#top movie directed by women in 2007: August Rush, The Nanny Diaries, La misma luna
 ```
 
 ```{r}
 mov17 <- moviesdb(2017)
 gross17 <- grossdb(mov17)
 gross17
-#top movie directed by women 2017: 
+#top movie directed by women 2017: Wonder Woman, Rough Night, The Beguiled
 ```
 
 
@@ -240,8 +243,12 @@ scale_x_continuous(limits = c(1967, 2017), breaks = seq(1967, 2017, 10), labels 
   
 scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.5, 1), labels = c("0", "0.5", "1"), expand = c(0,0)) +
   
-labs (title = "Gender of Movie Directors & Events in Feminism Over the Past 50 Years", x = "Production Year", y = "Proportion of Directors", fill = "Gender") +
+labs (title = "Gender of Movie Directors Over the Past 50 Years", x = "Production Year", y = "Proportion of Directors", fill = "Gender") +
   
-annotate("text", x = 1973, y = 0.2, label = "Roe v. Wade", size = 3, family = "sans", color = "black") 
+annotate("text", x = 2012, y = 0.3, label = 
+"Wonder Woman", size = 3, family = "sans", color = "black") +  annotate("text", x = 2007, y = 0.2, label = "August Rush", size = 3, family = "sans", color = "black") + annotate("text", x = 1997, y = 0.15, label = "The Peacemaker", size = 3, family = "sans", color = "black") + annotate("text", x = 1987, y = 0.2, label = "Ishtar", size = 3, family = "sans", color = "black") + annotate("text", x = 1978, y = 0.13, label = "Moment By Moment", size = 3, family = "sans", color = "black") 
+
+
+
 ```
 
