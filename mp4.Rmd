@@ -1,16 +1,22 @@
 ---
 title: "mp4"
-output: html_document
+authors: 
+date: April 13, 2018
+output: 
+  html_document:
+    df_print: paged
+    code_folding: hide
+    theme: "sandstone"
 ---
-
-```{r}
+We used this github repository to work on our project [^1].
+```{r, message = FALSE, warning = FALSE}
 library(mdsr)
 library(RMySQL)
 library(tidyverse)
 db <- dbConnect_scidb(dbname = "imdb")
 ```
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 # Get movies for specified year
 moviesdb <- function(s) {
             st <- "SELECT mi1.movie_id, 
@@ -78,7 +84,7 @@ femdirdb <- function(s){
 }
 ```
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 movies_67 <- moviesdb(1967)
 gross_67 <- grossdb(movies_67)
 alldir_67 <- alldirdb(1967)
@@ -87,7 +93,7 @@ prop67 <- femdir_67 %>%
            mutate(prop = femaledirectors/alldir_67$totaldirectors)
 ```
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 movies_77 <- moviesdb(1977)
 gross_77 <- grossdb(movies_77)
 alldir_77 <- alldirdb(1977)
@@ -96,7 +102,7 @@ prop77 <- femdir_77 %>%
            mutate(prop = femaledirectors/alldir_77$totaldirectors)
 ```
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 movies_87 <- moviesdb(1987)
 gross_87 <- grossdb(movies_87)
 alldir_87 <- alldirdb(1987)
@@ -145,7 +151,7 @@ allyearsfinal <- allyearstotal %>%
 ```
 
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 #find top movie directed by women for each of our selected years for annotations
 # Get movies for specified year
 library(dplyr)
@@ -185,48 +191,38 @@ grossdb <- function(dbs) {
 }
 ```
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 #get titles of top movies of 1967
 mov67 <- moviesdb(1967)
 gross67 <- grossdb(mov67)
 gross67
 #top movie directed by women in 1967: NONE
-```
 
-```{r}
 #get titles of top movies 1977
 mov77 <- moviesdb(1977)
 gross77 <- grossdb(mov77)
 gross77
 #top movie directed by women in 1977: NONE
 #1978 = Moment by Moment, #1980 = It's My Turn
-```
 
-```{r}
 #get titles for top movies of 1987
 mov87 <- moviesdb(1987)
 gross87 <- grossdb(mov87)
 gross87
 #top movie directed by women in 1987: Ishtar, Back to the Beach, Maid to Order
-```
 
-```{r}
 # get titles for top movies of 1997
 mov97 <- moviesdb(1997)
 gross97 <- grossdb(mov97)
 gross97
 #top movie directed by women in 1997: The Peacemaker, Private Pars, Out to Sea
-```
 
-```{r}
 #get titles for top movies of 2007
 mov07 <- moviesdb(2007)
 gross07 <- grossdb(mov07)
 gross07
 #top movie directed by women in 2007: August Rush, The Nanny Diaries, La misma luna
-```
 
-```{r}
 #get title for top movies of 2017
 mov17 <- moviesdb(2017)
 gross17 <- grossdb(mov17)
@@ -236,6 +232,7 @@ gross17
 
 
 ```{r}
+#plot proportion of female vs male directors 
 ggplot(allyearsfinal, aes(x = production_year, y = prop, fill = gender)) + 
 
 geom_area(aes(x = production_year, y =  prop_male, fill = 'm')) +
@@ -258,3 +255,4 @@ annotate("text", x = 2012, y = 0.28, label =
 
 ```
 
+[^1]: [Link to github repository](https://github.com/rmoskowitz/mp3)
