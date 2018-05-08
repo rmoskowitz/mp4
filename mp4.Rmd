@@ -2,6 +2,7 @@
 title: "mp4"
 output: html_document
 ---
+ 
 ```{r}
 library(mdsr)
 library(RMySQL)
@@ -176,7 +177,7 @@ prop87 <- dbfemaledirectors_87 %>%
 library(mdsr)
 library(RMySQL)
 db <- dbConnect_scidb(dbname = "imdb")
-yr67 <- "SELECT mi1.movie_id, 
+yr97 <- "SELECT mi1.movie_id, 
 			      mi1.info AS gross, 
             mi2.info, 
             t.title
@@ -188,10 +189,10 @@ yr67 <- "SELECT mi1.movie_id,
       WHERE mi1.info_type_id = 107
       		AND mi2.info_type_id = 8
       		AND mi2.info = 'USA'
-          AND t.production_year = 1967"; 
-dbyr67 <- dbGetQuery(db, yr67)
+          AND t.production_year = 1997"; 
+dbyr97 <- dbGetQuery(db, yr97)
 
-totalgross67 <- dbyr67 %>%
+totalgross97 <- dbyr97 %>%
   filter(grepl("\\(USA\\)|worldwide|Worldwide", gross)) %>%
   mutate(gross_string = str_extract(gross, "^\\$[0-9]+,[0-9]{3},[0-9]{3}"),
          gross = parse_number(gross_string)) %>%
@@ -200,34 +201,93 @@ totalgross67 <- dbyr67 %>%
   arrange(desc(sum_gross)) 
 
 #join with other tables to get directors 
-alldirectors_67 <- "SELECT movie_id, person_id,  gender, production_year,
+alldirectors_97 <- "SELECT movie_id, person_id,  gender, production_year,
 COUNT(DISTINCT(person_id)) AS totaldirectors
 FROM imdb.cast_info AS ci 
 JOIN name AS n ON n.id = ci.person_id
 JOIN title AS t ON t.id = ci.movie_id
 WHERE role_id = 8
-AND production_year = 1967;"
-dballdirectors_67 <- dbGetQuery(db, alldirectors_67)
+AND production_year = 1997;"
+dballdirectors_97 <- dbGetQuery(db, alldirectors_97)
 
 #find ratio of female directors
-femaledirectors_67 <- "SELECT movie_id, person_id,  gender, production_year,
+femaledirectors_97 <- "SELECT movie_id, person_id,  gender, production_year,
 COUNT(Distinct person_id) AS femaledirectors 
 FROM imdb.cast_info AS ci 
 JOIN name AS n ON n.id = ci.person_id
 JOIN title AS t ON t.id = ci.movie_id
 WHERE role_id = 8
-AND production_year = 1967
+AND production_year = 1997
 AND gender = 'f';"
-dbfemaledirectors_67 <- dbGetQuery(db, femaledirectors_67)
+dbfemaledirectors_97 <- dbGetQuery(db, femaledirectors_97)
 #use proportion of female character than finding leading female 
 #388
 
-dbft67 <- inner_join(dbfemaledirectors_67, totalgross67)
+dbft97 <- inner_join(dbfemaledirectors_97, totalgross97)
 #no results is shown, meaning there are no female directors 
 
-prop67 <- dbfemaledirectors_67 %>%
+prop97 <- dbfemaledirectors_97 %>%
   mutate(propdirectors = dbfemaledirectors_67$femaledirectors/dballdirectors_67$totaldirectors)
 ```
+
+```{r}
+library(mdsr)
+library(RMySQL)
+db <- dbConnect_scidb(dbname = "imdb")
+yr07 <- "SELECT mi1.movie_id, 
+			      mi1.info AS gross, 
+            mi2.info, 
+            t.title
+      FROM title AS t
+      JOIN movie_info AS mi1 ON
+      	mi1.movie_id = t.id
+      JOIN movie_info AS mi2 ON 
+      	mi2.movie_id = mi1.movie_id
+      WHERE mi1.info_type_id = 107
+      		AND mi2.info_type_id = 8
+      		AND mi2.info = 'USA'
+          AND t.production_year = 2007"; 
+dbyr07 <- dbGetQuery(db, yr07)
+
+totalgross07 <- dbyr07 %>%
+  filter(grepl("\\(USA\\)|worldwide|Worldwide", gross)) %>%
+  mutate(gross_string = str_extract(gross, "^\\$[0-9]+,[0-9]{3},[0-9]{3}"),
+         gross = parse_number(gross_string)) %>%
+  group_by(movie_id, title) %>%
+  summarise(sum_gross = sum(gross)) %>%
+  arrange(desc(sum_gross)) 
+
+#join with other tables to get directors 
+alldirectors_07 <- "SELECT movie_id, person_id,  gender, production_year,
+COUNT(DISTINCT(person_id)) AS totaldirectors
+FROM imdb.cast_info AS ci 
+JOIN name AS n ON n.id = ci.person_id
+JOIN title AS t ON t.id = ci.movie_id
+WHERE role_id = 8
+AND production_year = 2007;"
+dballdirectors_07 <- dbGetQuery(db, alldirectors_07)
+
+#find ratio of female directors
+femaledirectors_07 <- "SELECT movie_id, person_id,  gender, production_year,
+COUNT(Distinct person_id) AS femaledirectors 
+FROM imdb.cast_info AS ci 
+JOIN name AS n ON n.id = ci.person_id
+JOIN title AS t ON t.id = ci.movie_id
+WHERE role_id = 8
+AND production_year = 2007
+AND gender = 'f';"
+dbfemaledirectors_07 <- dbGetQuery(db, femaledirectors_07)
+#use proportion of female character than finding leading female 
+#388
+
+dbft07 <- inner_join(dbfemaledirectors_07, totalgross07)
+#no results is shown, meaning there are no female directors 
+
+prop07 <- dbfemaledirectors_07 %>%
+  mutate(propdirectors = dbfemaledirectors_07$femaledirectors/dballdirectors_07$totaldirectors)
+```
+
+
 
 ```{r}
 library(mdsr)
@@ -286,30 +346,18 @@ prop17 <- dbfemaledirectors_17 %>%
   mutate(propdirectors = dbfemaledirectors_17$femaledirectors/dballdirectors_17$totaldirectors)
 ```
 
- 
- #2 graphs
- 1. a line graph (0-1000), male and female directors over time
- 2. line graph trend: increase of only female directors over time 
+```{r}
+library(dplyr)
+allyears<- merge(prop17, prop07, all=TRUE)
+allyears1<-merge(allyears, prop97, all = TRUE)
+allyears2<-merge(allyears1, prop87, all = TRUE)
+allyears3<-merge(allyears2, prop77, all = TRUE)
+allyearsfinal<-merge(allyears3, prop67, all = TRUE)
+```
+  
+ 1967, 2017
  3. 2017: no. of female directors, writors, cinematopgraphers, producers, editors in top 100 films
- 4. female protagonists
-#hypothesis1
+ 
+ #hypothesis1
 #even though women's roles in film industry is becoming more prominent as seen in the increasing number of female directors and increasing activism for gender rights, there's still a big gender gap. 
 #social events 
-```{r}
-db <- dbConnect_scidb(dbname = "imdb")
-otherroles <-"SELECT ci.movie_id, ci.person_id, ci.role_id, n.gender, t.production_year
-FROM imdb.cast_info AS ci
-JOIN name AS n ON n.id = ci.person_id
-JOIN title AS t ON t.id = ci.movie_id
-JOIN imdb.cast_info AS ci2 ON ci2.movie_id = ci.movie_id
-JOIN imdb.cast_info AS ci3 ON ci3.movie_id = ci.movie_id
-WHERE  ci.role_id = 3
-AND n.gender = 'f'
-AND t.production_year = 2017
-AND ci2.role_id = 4
-AND ci3.role_id = 5;"
-dbotherroles <- dbGetQuery(db, otherroles)
-
-```
-#3,4,5,9
- 
