@@ -1,5 +1,5 @@
 ---
-title: "mp4"
+title: "How To Fix the Gender Gap in Hollywood"
 authors: 
 date: May 10, 2018
 output: 
@@ -7,12 +7,20 @@ output:
     df_print: paged
     code_folding: hide
     theme: "sandstone"
+    fig_caption: yes
+    
 ---
 
-We used this github repository to work on our project [^1].
+When [Natalie Portman introduced](https://www.huffingtonpost.com/entry/natalie-portman-director-golden-globes_us_5a52e2f4e4b01e1a4b16ab3a) the 2018 Golden Globe nominees for best director, she boldly stated, “and here are the all-male nominees.” Portman has been praised for stating how award shows fail to celebrate and recognize women in the film industry, especially women directors. Over the past 50 years there have been [major increase in activism](http://www.annenbergclassroom.org/files/documents/timelines/womensrightstimeline.pdf) for women’s rights in the U.S. Recently, there have been many [milestones for female directors](https://www.usatoday.com/story/life/movies/2017/06/16/10-major-milestones-women-directors-hollywood/102814400/) in the film industry. 
 
 
-```{r, message = FALSE, warning = FALSE}
+In 2017, Patty Jenkins directed Wonder Women which had the biggest opening weekend ever for a movie directed by a woman, generating $103.3 million. Rough Night, directed by Lucia Aniello, was the first R-rated studio comedy directed by a woman in over 20 years. Sofia Coppola recently won best director for The Beguiled at the Cannes Film Festival, and became the first American woman nominated for the Academy Award for best director for Lost in Translation. Women are gaining more rights in the U.S. every day, and producing incredible work in the film industry. However, women are not getting proper recognition for their work, as Portman so boldly stated. There is still a significant gender gap in the film industry. We are addressing this problem by researching film data over the past 50 years to understand how much things have changed for women in the industry. We also aim to research if having female directors impacts the amount of women working in the industry. We used this github repository to work on our analysis [^1].
+
+####*How have things changed for women in the film industry over the past 50 years exactly?*
+Figure 1 showcases a selection of one of the top grossing films directed by women for each decade in the past 50 years. Moment by Moment was directed by Jane Wagner in 1978, and was a romantic drama that would not pass the [Bechdel test](https://bechdeltest.com/). Ishtar, directed Elaine May in 1987, is an action-adventure-comedy film. The Peacemaker, directed Mimi Leder  in 1997, is an action political- thriller. August Rush is a drama directed by Kristen Sheridan in 2007. Lastly Wonder Woman directed by Patty Jenkins in 2017 is an action feminist film, which can definitely pass the Bechdel test. These trends show that over time, top grossing films directed by women have become more empowering for women. 
+
+
+```{r, message = FALSE, echo = FALSE, warning = FALSE}
 library(mdsr)
 library(RMySQL)
 library(tidyverse)
@@ -114,7 +122,7 @@ prop87 <- femdir_87 %>%
            mutate(prop = femaledirectors/alldir_87$totaldirectors)
 ```
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 movies_97 <- moviesdb(1997)
 gross_97 <- grossdb(movies_97)
 alldir_97 <- alldirdb(1997)
@@ -123,7 +131,7 @@ prop97 <- femdir_97 %>%
            mutate(prop = femaledirectors/alldir_97$totaldirectors)
 ```
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 movies_07 <- moviesdb(2007)
 gross_07 <- grossdb(movies_07)
 alldir_07 <- alldirdb(2007)
@@ -132,7 +140,7 @@ prop07 <- femdir_07 %>%
            mutate(prop = femaledirectors/alldir_07$totaldirectors)
 ```
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 movies_17 <- moviesdb(2017)
 gross_17 <- grossdb(movies_17)
 alldir_17 <- alldirdb(2017)
@@ -141,7 +149,7 @@ prop17 <- femdir_17 %>%
            mutate(prop = femaledirectors/alldir_17$totaldirectors)
 ```
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 allyears<- merge(prop67, prop77, all=TRUE)
 allyears1<-merge(allyears, prop87, all = TRUE)
 allyears2<-merge(allyears1, prop97, all = TRUE)
@@ -194,7 +202,7 @@ grossdb <- function(dbs) {
 }
 ```
 
-```{r, message = FALSE, warning = FALSE}
+```{r, message = FALSE, echo = FALSE, warning = FALSE}
 #get titles of top movies of 1967
 mov67 <- moviesdb(1967)
 gross67 <- grossdb(mov67)
@@ -234,7 +242,7 @@ gross17
 ```
 
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 library(dplyr)
 allyears<- merge(prop17, prop07, all=TRUE)
 allyears1<-merge(allyears, prop97, all = TRUE)
@@ -245,7 +253,8 @@ allyearsfinal<-merge(allyears3, prop67, all = TRUE)
   
  
 
-```{r}
+```{r, warning=FALSE, echo = FALSE, message=FALSE, fig.cap = "Proportion of Female vs. Male Directors Over the Past 50 Years"}
+allyearsfinal
 #plot proportion of female vs male directors 
 ggplot(allyearsfinal, aes(x = production_year, y = prop, fill = gender)) + 
 
@@ -273,9 +282,11 @@ labs (title = "Gender of Movie Directors Over the Past 50 Years", x = "Productio
 
 ```
 
+Figure 1 also shows the gender gap between the number of female directors and male directors for films over the past 50 years. This figure indicates that although the proportion of female to male directors has steadily increased since 1967, the gender gap in directors is still a huge issue. Women made up around 0.02% of all directors in 1967. This number has gone up to 0.09% in 2017. Though this is an increase in female directors, it  not a significant increase. The gender gap is still alive and well in the film industry. 
 
 
-```{r}
+
+```{r, message = FALSE, warning = FALSE}
 
 db <- dbConnect_scidb(dbname = "imdb")
 editors <- "SELECT ci.movie_id, 
@@ -295,7 +306,7 @@ editors <- "SELECT ci.movie_id,
  dbeditors <-dbGetQuery(db, editors)
 ```
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 femaledirectors17 <- "SELECT movie_id,
                       person_id,
                       gender,
@@ -313,10 +324,8 @@ dbfemaledirectors17 <-dbGetQuery(db, femaledirectors17)
 editors17 <- inner_join(dbeditors, dbfemaledirectors17, by = "movie_id")
 ```
 
-#female editors in films directed by males
-```{r}
- 
 
+```{r}
 db <- dbConnect_scidb(dbname = "imdb")
 editors <- "SELECT ci.movie_id, 
                   t.title,
@@ -352,9 +361,7 @@ dbmaledirectors17 <-dbGetQuery(db, maledirectors17)
 ```{r}
 female_editors17inmaledirectedfilms <- inner_join(dbeditors, dbmaledirectors17, by = "movie_id")
 ```
-#found that there are 2358 female editors in female directed films and 1384 female editors in male directed films.  
 
-#find cinematographers in male directed films: 762
 ```{r}
 db <- dbConnect_scidb(dbname = "imdb")
 cinematographers <- "SELECT ci.movie_id, 
@@ -390,11 +397,10 @@ dbmaledirectors17 <-dbGetQuery(db, maledirectors17)
 
 ```{r}
 cinematographers17 <- inner_join(dbcinematographers, dbmaledirectors17, by = "movie_id")
-
 ```
-#cinematographers in female directed films : 1185
 
-```{r}
+
+```{r, message = FALSE, warning = FALSE}
 db <- dbConnect_scidb(dbname = "imdb")
 cinematographers <- "SELECT ci.movie_id, 
                   t.title,
@@ -431,13 +437,12 @@ cinematographers17infemaledirectedfilms <- inner_join(dbcinematographers, dbfema
 
 #more female editors, and cinematographers in female directed films
 
-
 editors <- merge(female_editors17inmaledirectedfilms, editors17, all=TRUE)
 cinematographersmerge <- merge(cinematographers17infemaledirectedfilms, cinematographers17, all=TRUE)
 allroles <- merge(editors, cinematographersmerge, all = TRUE)
 ```
 
-```{r}
+```{r, warning=FALSE,echo = FALSE, message=FALSE, fig.cap = "Proportion of Female vs. Male Directors Over the Past 50 Years"}
 library(ggplot2)
 allrolesg <- ggplot(allroles, aes(x = role_id,  fill = gender))
 allrolesg + geom_bar(position=position_dodge()) +
@@ -446,8 +451,18 @@ allrolesg + geom_bar(position=position_dodge()) +
                      breaks = c(5, 9),
                      labels =c("cinematographers", "editors")) +
   scale_fill_manual(values=c('salmon1', 'royalblue')) +
-  labs(title = "Amount of women hired in female-directed vs male-directed films")``` 
+  labs(title = "Amount of women hired in female-directed vs male-directed films")
 ```
+####*What can be done about the gender gap?*
+Women are very underrepresented in Hollywood.  They account for a small percentage of the crew members.  One way to combat this problem is to support female directors.  Figure 2 shows that films with female directors have a higher number of female crew members.  In other words, women support women.  In female-directed movies in 2017, the number of female editors and cinematographers doubled that of male-directed movies.  Similarly, in another study conducted by USC Viterbi School of Engineering’s Signal Analysis Interpretation Lab (SAIL), female characters had fifty percent more lines with a female writer.  This ripple effect can have a positive impact on women representation in Hollywood.  Having a woman behind the scene translates to women having a prominent role on screen.
+
+Besides watching more films directed by women, we should support emerging female directors and producers as well. One of the ways is to give financial support to organizations that support women in film industry because they can create a bigger change and provide help to more emerging female filmmakers. Some of the barriers that prevent more female directors and producers from emerging are the lack of knowledge to succeed and financial support. Organizations such as Sundance Institute and Women Make Movies (WMM) recognize these problems. [Sundance Institute](http://www.sundance.org/blogs/introducing-the-class-of-2017-women-at-sundance-fellows#/) provides fellowships that teach emerging female directors and producers on how to have sustainable careers in the cut-throat industry. The participants will receive mentorship from experienced filmmakers who can provide them professional development. They will also learn how to find, negotiate and close financial deals. Moreover, they will also receive financial support to sustain their film career as well.
+
+On the other hand, [WMM](http://www.wmm.com/about/support_wmm.shtml) supports women who are aspired to make documentaries, especially women of colours, women who have disabilities, or identify themselves as LGBTQ. With the aim of raising equality in the film industry, they train these women with skills needed to succeed as well as raising funds for their filmmaking. By 2017, they were able to raise $6.5million for their projects and six of their films are featured in Sundance Film Festival.
+
+Like what Natalie Portman said, we need more women to be recognized behind-the-scene and on-screen. We need to hear voices of women, especially those in minority groups, in order to promote equality. Through watching films produced and directed by women, supporting emerging female directors and producers, as well as organizations that support them, we could be one step closer to closing the gender gap in the film industry. 
+
+
 [^1]: [Link to github repository](https://github.com/rmoskowitz/mp4)
 
 
