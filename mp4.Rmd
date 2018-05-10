@@ -287,9 +287,7 @@ editors <- "SELECT ci.movie_id,
                 AND production_year = 2017
             GROUP BY movie_id"; 
  dbeditors <-dbGetQuery(db, editors)
-```
 
-```{r, message = FALSE, warning = FALSE}
 femaledirectors17 <- "SELECT movie_id,
                       person_id,
                       gender,
@@ -301,9 +299,7 @@ femaledirectors17 <- "SELECT movie_id,
                   AND production_year = 2017
                   AND gender = 'f';"
 dbfemaledirectors17 <-dbGetQuery(db, femaledirectors17)
-```
 
-```{r}
 editors17 <- inner_join(dbeditors, dbfemaledirectors17, by = "movie_id")
 ```
 
@@ -325,9 +321,7 @@ editors <- "SELECT ci.movie_id,
                 AND production_year = 2017
             GROUP BY movie_id"; 
  dbeditors <-dbGetQuery(db, editors)
-```
 
-```{r}
 maledirectors17 <- "SELECT movie_id,
                       person_id,
                       gender,
@@ -339,9 +333,7 @@ maledirectors17 <- "SELECT movie_id,
                   AND production_year = 2017
                   AND gender = 'm';"
 dbmaledirectors17 <-dbGetQuery(db, maledirectors17)
-```
 
-```{r}
 female_editors17inmaledirectedfilms <- inner_join(dbeditors, dbmaledirectors17, by = "movie_id")
 ```
 
@@ -376,9 +368,7 @@ maledirectors17 <- "SELECT movie_id,
                   AND production_year = 2017
                   AND gender = 'm';"
 dbmaledirectors17 <-dbGetQuery(db, maledirectors17)
-```
 
-```{r}
 cinematographers17 <- inner_join(dbcinematographers, dbmaledirectors17, by = "movie_id")
 ```
 
