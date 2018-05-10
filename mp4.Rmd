@@ -224,7 +224,7 @@ gross17
 
  
 
-```{r, warning=FALSE,  message=FALSE, fig.cap = "Proportion of Female vs. Male Directors Over the Past 50 Years"}
+```{r, warning=FALSE,  message=FALSE, fig.cap = "Figure 1: Proportion of Female vs. Male Directors Over the Past 50 Years"}
 library(dplyr)
 
 allyears<- merge(prop67, prop77, all=TRUE)
@@ -415,7 +415,7 @@ cinematographersmerge <- merge(cinematographers17infemaledirectedfilms, cinemato
 allroles <- merge(editors, cinematographersmerge, all = TRUE)
 ```
 
-```{r, warning=FALSE,echo = FALSE, message=FALSE, fig.cap = "Proportion of Female vs. Male Directors Over the Past 50 Years"}
+```{r, warning=FALSE,echo = FALSE, message=FALSE, fig.cap = "Figure 2: Women hired in female-directed vs. male-directed films"}
 library(ggplot2)
 allrolesg <- ggplot(allroles, aes(x = role_id,  fill = gender))
 allrolesg + geom_bar(position=position_dodge()) +
@@ -427,7 +427,7 @@ allrolesg + geom_bar(position=position_dodge()) +
   labs(title = "Amount of women hired in female-directed vs male-directed films")
 ```
 ####*What can be done about the gender gap?*
-Women are very underrepresented in Hollywood.  They account for a small percentage of the crew members.  One way to combat this problem is to support female directors.  Figure 2 shows that films with female directors have a higher number of female crew members.  In other words, women support women.  In female-directed movies in 2017, the number of female editors and cinematographers doubled that of male-directed movies.  Similarly, in another study conducted by USC Viterbi School of Engineering’s Signal Analysis Interpretation Lab (SAIL), female characters had fifty percent more lines with a female writer.  This ripple effect can have a positive impact on women representation in Hollywood.  Having a woman behind the scene translates to women having a prominent role on screen.
+Women are very underrepresented in Hollywood.  They account for a small percentage of the crew members.  One way to combat this problem is to support female directors.  Figure 2 shows that films with female directors have a higher number of female crew members.  In other words, women support women.  In female-directed movies in 2017, the number of female editors and cinematographers doubled that of male-directed movies.  Similarly, in another study conducted by [USC Viterbi School of Engineering’s Signal Analysis Interpretation Lab (SAIL)](https://www.independent.co.uk/arts-entertainment/gender-bias-hollywood-movie-industry-sexism-bechdel-wallace-test-charlize-theron-geena-davis-a7889956.html), female characters had fifty percent more lines with a female writer.  This ripple effect can have a positive impact on women representation in Hollywood.  Having a woman behind the scene translates to women having a prominent role on screen.
 
 Besides watching more films directed by women, we should support emerging female directors and producers as well. One of the ways is to give financial support to organizations that support women in film industry because they can create a bigger change and provide help to more emerging female filmmakers. Some of the barriers that prevent more female directors and producers from emerging are the lack of knowledge to succeed and financial support. Organizations such as Sundance Institute and Women Make Movies (WMM) recognize these problems. [Sundance Institute](http://www.sundance.org/blogs/introducing-the-class-of-2017-women-at-sundance-fellows#/) provides fellowships that teach emerging female directors and producers on how to have sustainable careers in the cut-throat industry. The participants will receive mentorship from experienced filmmakers who can provide them professional development. They will also learn how to find, negotiate and close financial deals. Moreover, they will also receive financial support to sustain their film career as well.
 
