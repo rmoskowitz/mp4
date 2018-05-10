@@ -1,6 +1,6 @@
 ---
 title: "How To Fix the Gender Gap in Hollywood"
-authors: 
+authors: Truc Tran, Pinn Janvatanavit, and Rachel Moskowitz
 date: May 10, 2018
 output: 
   html_document:
@@ -15,6 +15,7 @@ When [Natalie Portman introduced](https://www.huffingtonpost.com/entry/natalie-p
 
 
 In 2017, Patty Jenkins directed Wonder Women which had the biggest opening weekend ever for a movie directed by a woman, generating $103.3 million. Rough Night, directed by Lucia Aniello, was the first R-rated studio comedy directed by a woman in over 20 years. Sofia Coppola recently won best director for The Beguiled at the Cannes Film Festival, and became the first American woman nominated for the Academy Award for best director for Lost in Translation. Women are gaining more rights in the U.S. every day, and producing incredible work in the film industry. However, women are not getting proper recognition for their work, as Portman so boldly stated. There is still a significant gender gap in the film industry. We are addressing this problem by researching film data over the past 50 years to understand how much things have changed for women in the industry. We also aim to research if having female directors impacts the amount of women working in the industry. We used this github repository to work on our analysis [^1].
+
 
 ####*How have things changed for women in the film industry over the past 50 years exactly?*
 Figure 1 showcases a selection of one of the top grossing films directed by women for each decade in the past 50 years. Moment by Moment was directed by Jane Wagner in 1978, and was a romantic drama that would not pass the [Bechdel test](https://bechdeltest.com/). Ishtar, directed Elaine May in 1987, is an action-adventure-comedy film. The Peacemaker, directed Mimi Leder  in 1997, is an action political- thriller. August Rush is a drama directed by Kristen Sheridan in 2007. Lastly Wonder Woman directed by Patty Jenkins in 2017 is an action feminist film, which can definitely pass the Bechdel test. These trends show that over time, top grossing films directed by women have become more empowering for women. 
@@ -102,45 +103,35 @@ alldir_67 <- alldirdb(1967)
 femdir_67 <- femdirdb(1967)
 prop67 <- femdir_67 %>%
            mutate(prop = femaledirectors/alldir_67$totaldirectors)
-```
 
-```{r, message = FALSE, warning = FALSE}
 movies_77 <- moviesdb(1977)
 gross_77 <- grossdb(movies_77)
 alldir_77 <- alldirdb(1977)
 femdir_77 <- femdirdb(1977)
 prop77 <- femdir_77 %>%
            mutate(prop = femaledirectors/alldir_77$totaldirectors)
-```
 
-```{r, message = FALSE, warning = FALSE}
 movies_87 <- moviesdb(1987)
 gross_87 <- grossdb(movies_87)
 alldir_87 <- alldirdb(1987)
 femdir_87 <- femdirdb(1987)
 prop87 <- femdir_87 %>%
            mutate(prop = femaledirectors/alldir_87$totaldirectors)
-```
 
-```{r, message = FALSE, warning = FALSE}
 movies_97 <- moviesdb(1997)
 gross_97 <- grossdb(movies_97)
 alldir_97 <- alldirdb(1997)
 femdir_97 <- femdirdb(1997)
 prop97 <- femdir_97 %>%
            mutate(prop = femaledirectors/alldir_97$totaldirectors)
-```
 
-```{r, message = FALSE, warning = FALSE}
 movies_07 <- moviesdb(2007)
 gross_07 <- grossdb(movies_07)
 alldir_07 <- alldirdb(2007)
 femdir_07 <- femdirdb(2007)
 prop07 <- femdir_07 %>%
            mutate(prop = femaledirectors/alldir_07$totaldirectors)
-```
 
-```{r, message = FALSE, warning = FALSE}
 movies_17 <- moviesdb(2017)
 gross_17 <- grossdb(movies_17)
 alldir_17 <- alldirdb(2017)
@@ -149,20 +140,9 @@ prop17 <- femdir_17 %>%
            mutate(prop = femaledirectors/alldir_17$totaldirectors)
 ```
 
-```{r, message = FALSE, warning = FALSE}
-allyears<- merge(prop67, prop77, all=TRUE)
-allyears1<-merge(allyears, prop87, all = TRUE)
-allyears2<-merge(allyears1, prop97, all = TRUE)
-allyears3<-merge(allyears2, prop07, all = TRUE)
-allyearstotal<-merge(allyears3, prop17, all = TRUE)
-
-allyearsfinal <- allyearstotal %>%
-  arrange(production_year) %>%
-  mutate(prop_male = 1)
-```
 
 
-```{r, message = FALSE, warning = FALSE}
+```{r, message = FALSE, echo = FALSE, warning = FALSE}
 #find top movie directed by women for each of our selected years for annotations
 # Get movies for specified year
 library(dplyr)
@@ -202,7 +182,7 @@ grossdb <- function(dbs) {
 }
 ```
 
-```{r, message = FALSE, echo = FALSE, warning = FALSE}
+```{r, message = FALSE, echo = FALSE, warning = FALSE, results = 'hide'}
 #get titles of top movies of 1967
 mov67 <- moviesdb(1967)
 gross67 <- grossdb(mov67)
@@ -242,19 +222,22 @@ gross17
 ```
 
 
-```{r, message = FALSE, warning = FALSE}
-library(dplyr)
-allyears<- merge(prop17, prop07, all=TRUE)
-allyears1<-merge(allyears, prop97, all = TRUE)
-allyears2<-merge(allyears1, prop87, all = TRUE)
-allyears3<-merge(allyears2, prop77, all = TRUE)
-allyearsfinal<-merge(allyears3, prop67, all = TRUE)
-```
-  
  
 
-```{r, warning=FALSE, echo = FALSE, message=FALSE, fig.cap = "Proportion of Female vs. Male Directors Over the Past 50 Years"}
-allyearsfinal
+```{r, warning=FALSE,  message=FALSE, fig.cap = "Proportion of Female vs. Male Directors Over the Past 50 Years"}
+library(dplyr)
+
+allyears<- merge(prop67, prop77, all=TRUE)
+allyears1<-merge(allyears, prop87, all = TRUE)
+allyears2<-merge(allyears1, prop97, all = TRUE)
+allyears3<-merge(allyears2, prop07, all = TRUE)
+allyearstotal<-merge(allyears3, prop17, all = TRUE)
+
+allyearsfinal <- allyearstotal %>%
+  arrange(production_year) %>%
+  mutate(prop_male = 1)
+
+
 #plot proportion of female vs male directors 
 ggplot(allyearsfinal, aes(x = production_year, y = prop, fill = gender)) + 
 
